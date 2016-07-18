@@ -1,0 +1,36 @@
+sub $0, $0, $0
+sub $12, $12, $12
+addi $12, $12, 1
+add $10, $0, $0
+add $11, $0, $12
+sw $10, 0($0)
+sw $11, 0($10)
+slt $12, $10, $11
+beq $0, $12, menor
+j maior
+
+loop:
+	lw $1, 2($0)
+	lw $2, 3($0)
+	add $3, $1, $2
+	sw $3, 4($0)
+	addi $0, $0, 1
+	beq $0, $12, subtrai
+	j loop
+	
+menor:
+	add $12, $0, $11
+	j loop
+	
+maior:
+	add $12, $0, $10
+	j loop
+	
+subtrai:
+	lw $1, 2($10)
+	lw $2, 2($11)
+	sub $0, $2, $1
+	sw $0, 3($12)
+	
+fim:
+	j fim
