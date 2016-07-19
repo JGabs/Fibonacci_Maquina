@@ -1,15 +1,24 @@
+//inicia reg0=0,reg10=0, reg11=1 reg12=1 
 sub $0, $0, $0
 sub $12, $12, $12
 addi $12, $12, 1
 add $10, $0, $0
 add $11, $0, $12
+
+//guarda os dois primeiros termos de fibonacci 0 e 1 na memoria
 sw $10, 0($0)
 sw $11, 0($10)
+
+//verifica se os parametros passados qual deles é maior
 slt $12, $10, $11
 beq $0, $12, menor
 j maior
 
 loop:
+
+	//for (reg0=0; reg0<reg<12; reg0++)
+	//carrega os dois ultimos termos de fibonacci e salva no proximo termo
+
 	lw $1, 2($0)
 	lw $2, 3($0)
 	add $3, $1, $2
@@ -17,6 +26,8 @@ loop:
 	addi $0, $0, 1
 	beq $0, $12, subtrai
 	j loop
+
+//o maior é guardado no reg12
 	
 menor:
 	add $12, $0, $11
@@ -26,6 +37,8 @@ maior:
 	add $12, $0, $10
 	j loop
 	
+	
+	//depois de calcular e salvar todos os valores precisos, realiza a subtração pedida no enunciado e salva na memoria
 subtrai:
 	lw $1, 2($10)
 	lw $2, 2($11)
