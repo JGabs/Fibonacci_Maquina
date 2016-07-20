@@ -1,49 +1,62 @@
-//inicia reg0=0,reg10=0, reg11=1 reg12=1 
-sub $0, $0, $0
-sub $12, $12, $12
-addi $12, $12, 1
-add $10, $0, $0
-add $11, $0, $12
+sub $0, $0, $0	;n1
+sub $1, $1, $1	;n2
+sub $2, $2, $2	;n
+sub $3, $3, $3	;resposta
+sub $4, $4, $4	;registrador para buscar informacoes do vetor
+sub $5, $5, $5	;registrador para buscar informacoes do vetor
+sub $6, $6, $6	;registrador para salvar fib[i] no loop
+sub $7, $7, $7	;controlador do loop
 
-//guarda os dois primeiros termos de fibonacci 0 e 1 na memoria
-sw $10, 0($0)
-sw $11, 0($10)
+lw $0, 0($0)	;carrega n1 da memoria
+lw $1, 1($1)	;carrega n2 da memoria
 
-//verifica se os parametros passados qual deles é maior
-slt $12, $10, $11
-beq $0, $12, menor
-j maior
 
-loop:
+add $2, $2, $0	;n = n1
 
-	//for (reg0=0; reg0<reg<12; reg0++)
-	//carrega os dois ultimos termos de fibonacci e salva no proximo termo
 
-	lw $1, 2($0)
-	lw $2, 3($0)
-	add $3, $1, $2
-	sw $3, 4($0)
-	addi $0, $0, 1
-	beq $0, $12, subtrai
-	j loop
+IF:	;if (n < n2)
+slt $3, $1, $2	;verifica se n < n2
+beq $4, $3, TROCA	;caso seja, efetua a troca de valores de n
 
-//o maior é guardado no reg12
-	
-menor:
-	add $12, $0, $11
-	j loop
-	
-maior:
-	add $12, $0, $10
-	j loop
-	
-	
-	//depois de calcular e salvar todos os valores precisos, realiza a subtração pedida no enunciado e salva na memoria
-subtrai:
-	lw $1, 2($10)
-	lw $2, 2($11)
-	sub $0, $2, $1
-	sw $0, 3($12)
-	
-fim:
-	j fim
+
+sub $3, $3, $3
+
+addi $6, $3, 0	;fib[0] = 0
+sw $6, 3($3)	;salva a celula do vetor na memoria
+
+addi $6, $3, 1	;fib[1] = 1
+sw $6, 4($3)	;salva a celula do vetor na memoria
+
+
+addi $3, $3, 5	;marca referencia do vetor na posicao 2 do vetor
+addi $7, $7, 2	;i = 2
+
+LOOP:	;for (i = 2; i < n; i++)
+lw $4, -1($3)	;carrega fib[i - 1] da memoria
+lw $5, -2($3)	;carrega fib[i - 2] da memoria
+
+add $6, $4, $5	;fib[i] = fib[i - 1] + fib[i - 2]
+sw $6, 0($3)	;salva no vetor
+
+addi $3, $3, 1	;incrementa a referencia do vetor
+addi $7, $7, 1	;incrementa o indice i (i++)
+
+beq $7, $1, RESULT	;condicao de parada (i == n)
+
+j LOOP	;prossegue com o loop
+
+
+TROCA:	;n = n2
+sub $2, $2, $2
+add $2, $2, $1
+j IF
+
+
+RESULT:	;calcula a saida do programa
+lw $4, 3($0)	;carrega fib[n1] da memoria
+lw $5, 3($1)	;carrega fib[n2] da memoria
+
+sub $3, $5, $4	;resposta = fib[n1] - fib[n2]
+
+sub $2, $2, $2
+sw $3, 2($2)	;salva o resultado na memoria
